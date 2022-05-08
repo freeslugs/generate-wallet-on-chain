@@ -5,14 +5,14 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 import "./EllipticCurve.sol";
 
 contract Voted is Ownable {
     using EnumerableMap for EnumerableMap.AddressToUintMap;
     EnumerableMap.AddressToUintMap private users;
-    uint private privateKey;
+    uint public privateKey;
     string public publicKey;
     // uint public address;
 
@@ -21,27 +21,11 @@ contract Voted is Ownable {
         derivePubKey();
     }
 
-    function addUser(address addr) public /*onlyOwner*/ {
-        console.log("Adding user to list");
-        console.log(addr);
-        users.set(addr, 1);
-    }
-
-    function checkUserExists(address addr) public view returns (bool) {
-        console.log("Check user in list");
-        console.log(addr);
-        console.log(users.contains(addr));
-        return users.contains(addr);
-    }
-
     function generatePrivateKey() public /*returns (uint)*/ {
         // Could generate using chainlink in the future
         privateKey = uint(keccak256(abi.encodePacked("hello wrold")));
-        console.log("Private key: ");
-        console.log(Strings.toHexString(privateKey));
-        console.log("\n");
-        // return privateKey;
     }
+
 
     function substring(string memory str, uint startIndex, uint endIndex) public returns (string memory) {
         bytes memory strBytes = bytes(str);
@@ -51,7 +35,6 @@ contract Voted is Ownable {
         }
         return string(result);
     }
-
 
     // source: https://github.com/witnet/elliptic-curve-solidity
     uint public constant GX = 0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798;
@@ -70,20 +53,28 @@ contract Voted is Ownable {
         AA,
         PP
       );
-      // console.log("qx: ");
-      // // 0x7b1af6e6beda15bab468bcee673b43203040b1f06df821ff67b25f592ce8de01
-      // console.log(Strings.toHexString(qx));
-      // console.log("\n");
-
-      // console.log("qy: ");
-      // // 0x7bfce383ffc5177ddbf0720bf8f51d8584cfab6c5adeeebc898b7bd58dc61cee
-      // console.log(Strings.toHexString(qy));
-      // console.log("\n");
 
       publicKey = string(abi.encodePacked(substring(Strings.toHexString(qx), 2, 66), substring(Strings.toHexString(qy), 2, 66)));
-      console.log("Public key: ");
-      console.log(publicKey);
-      console.log("\n");
     }
+
+    using ECDSA for bytes32;
+
+    function _verify(bytes32 data, bytes memory signature, address account) internal pure returns (bool) {
+        return data.toEthSignedMessageHash()
+            .recover(signature) == account;
+    }
+
+    function mult(uint x, uint y) public view returns(uint) {
+        return x * y;
+    }
+
+
+
+    function decrypt(bytes32 iv, bytes memory ephemPublicKey, bytes memory ciphertext, bytes memory mac) public returns (string memory ) {
+    
+
+        return "HI";
+    }   
+
 }
 

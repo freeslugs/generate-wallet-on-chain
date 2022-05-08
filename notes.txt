@@ -1,71 +1,150 @@
 
-// function uint2hexstr(uint i) public view returns (bytes memory) {
-//     // if (i == 0) return "0";
-//     uint j = i;
-//     uint length;
-//     while (j != 0) {
-//         length++;
-//         j = j >> 4;
-//     }
-//     console.log("length");
-//     console.log(length);
-//     uint mask = 15;
-//     bytes memory bstr = new bytes(length);
-//     uint k = length;
-//     while (i != 0) {
-//         uint curr = (i & mask);
-//         bstr[--k] = curr > 9 ?
-//             bytes1(uint8(55 + curr)) :
-//             bytes1(uint8(48 + curr)); // 55 = 65 - 10
-//         i = i >> 4;
-//     }
+function uint2hexstr(uint i) public view returns (bytes memory) {
+    // if (i == 0) return "0";
+    uint j = i;
+    uint length;
+    while (j != 0) {
+        length++;
+        j = j >> 4;
+    }
+    console.log("length");
+    console.log(length);
+    uint mask = 15;
+    bytes memory bstr = new bytes(length);
+    uint k = length;
+    while (i != 0) {
+        uint curr = (i & mask);
+        bstr[--k] = curr > 9 ?
+            bytes1(uint8(55 + curr)) :
+            bytes1(uint8(48 + curr)); // 55 = 65 - 10
+        i = i >> 4;
+    }
 
-//     console.log(string(bstr));
-//     return bstr;
-// }
+    console.log(string(bstr));
+    return bstr;
+}
 
-// function bytesToUint(bytes memory b) public pure returns (uint256){
-//     uint256 number;
-//     for(uint i=0;i<b.length;i++){
-//         number = number + uint8(b[i]);
-//     }
-//     return number;
-// }
+function bytesToUint(bytes memory b) public pure returns (uint256){
+    uint256 number;
+    for(uint i=0;i<b.length;i++){
+        number = number + uint8(b[i]);
+    }
+    return number;
+}
 
-// function bytes32ToStr(bytes32 _bytes32) public pure returns (string memory) {
+function bytes32ToStr(bytes32 _bytes32) public pure returns (string memory) {
 
-//     // string memory str = string(_bytes32);
-//     // TypeError: Explicit type conversion not allowed from "bytes32" to "string storage pointer"
-//     // thus we should fist convert bytes32 to bytes (to dynamically-sized byte array)
+    // string memory str = string(_bytes32);
+    // TypeError: Explicit type conversion not allowed from "bytes32" to "string storage pointer"
+    // thus we should fist convert bytes32 to bytes (to dynamically-sized byte array)
 
-//     bytes memory bytesArray = new bytes(32);
-//     for (uint256 i; i < 32; i++) {
-//         bytesArray[i] = _bytes32[i];
-//     }
-//     return string(bytesArray);
-// }
+    bytes memory bytesArray = new bytes(32);
+    for (uint256 i; i < 32; i++) {
+        bytesArray[i] = _bytes32[i];
+    }
+    return string(bytesArray);
+}
 
-        // uint privateKey = generateRandom();
-        // bytes memory hexx = uint2hexstr(privateKey);
-        // return derivePubKey(bytesToUint(hexx));
+        uint privateKey = generateRandom();
+        bytes memory hexx = uint2hexstr(privateKey);
+        return derivePubKey(bytesToUint(hexx));
 
-        // uint256 privateKey = generateRandom();
-        // console.logBytes32(privateKey);
+        uint256 privateKey = generateRandom();
+        console.logBytes32(privateKey);
 
-        // string memory converted = bytes32ToStr(privateKey);
-        // console.log(converted);
+        string memory converted = bytes32ToStr(privateKey);
+        console.log(converted);
 
 
-            // const EthereumEncryption = require('ethereum-encryption');
+            const EthereumEncryption = require('ethereum-encryption');
 
-    // const encrypted = EthereumEncryption.encryptWithPublicKey(
-    //     res, // publicKey
-    //     'foobar' // data
-    // );
+    const encrypted = EthereumEncryption.encryptWithPublicKey(
+        res, // publicKey
+        'foobar' // data
+    );
 
-    // console.log(encrypted)
+    console.log(encrypted)
 
-    // const message = verifyHashSignature.decryptWithPrivateKey(
-    //     '2400238629a674a372694567f949c94847b76607de151433587c20547aa90460', // privateKey
-    //     '0333eec583d04a55ce0aba9dbfb04035e8c6de4f501ecc9b26c08fa501a5ec1507ccd64457ceae9dd4f52abfa673912f2618bfb71392f864465d9bfe996bc0a2acf6133e14a689b7c1299c60eadf43f45adbb8a21543b0c4749aa9bc2a106a0f8e' // encrypted-data
-    // );
+    const message = verifyHashSignature.decryptWithPrivateKey(
+        '2400238629a674a372694567f949c94847b76607de151433587c20547aa90460', // privateKey
+        '0333eec583d04a55ce0aba9dbfb04035e8c6de4f501ecc9b26c08fa501a5ec1507ccd64457ceae9dd4f52abfa673912f2618bfb71392f864465d9bfe996bc0a2acf6133e14a689b7c1299c60eadf43f45adbb8a21543b0c4749aa9bc2a106a0f8e' // encrypted-data
+    );
+
+
+
+    res = await _eccrypto.decrypt(Buffer.from('352969f06581a4e2c89a6b4d1370260a135a3dcd199c9fd60f08414ec7da0520', 'hex'), encryptedBuffer)
+    console.log(res.toString())
+
+
+
+ const eccryptoJS = require('eccrypto-js')
+
+    const str = 'test message to encrypt';
+    const msg = eccryptoJS.utf8ToBuffer(str);
+
+    console.log(Buffer.from(publicKey, "hex"))
+    console.log(Buffer.from(privateKey, "hex"))
+
+
+    const encrypted = await eccryptoJS.encrypt(Buffer.from(publicKey, "hex"), msg);
+    console.log(`encrypted: ${encrypted}`)
+    const decrypted = await eccryptoJS.decrypt(Buffer.from(privateKey, "hex"), encrypted);
+    console.log(`Decrypted: ${decrypted}`)
+
+
+
+    function mult(uint x, uint y) public view returns(uint) {
+        return x * y;
+    }
+
+    function encryptDecrypt (bytes memory data, bytes memory key) public view returns (bytes memory result) {
+      // Store data length on stack for later use
+      uint256 length = data.length;
+      // console.log("length");
+      // console.log(length);
+      // console.log("\n");
+
+      assembly {
+        // Set result to free memory pointer
+        result := mload (0x40)
+        // Increase free memory pointer by lenght + 32
+        mstore (0x40, add (add (result, length), 32))
+        // Set result length
+        mstore (result, length)
+      }
+
+      // Iterate over the data stepping by 32 bytes
+      for (uint i = 0; i < length; i += 32) {
+        // Generate hash of the key and offset
+        bytes32 hash = keccak256 (abi.encodePacked (key, i));
+
+        bytes32 chunk;
+        assembly {
+          // Read 32-bytes data chunk
+          chunk := mload (add (data, add (i, 32)))
+        }
+        // XOR the chunk with hash
+        chunk ^= hash;
+        assembly {
+          // Write 32-byte encrypted chunk
+          mstore (add (result, add (i, 32)), chunk)
+        }
+      }
+    }
+
+
+    // let res = await contract.generateRandom()
+    // console.log(res)
+
+    // res = await contract.derivePubKey(res)
+    // console.log(res)
+    // let res = await contract.publicKey() 
+
+
+  // it("Should add a user", async function () {
+  //   let res = await contract.checkUserExists(address1.address)
+  //   expect(res).to.equal(false)
+  //   await contract.addUser(address1.address)
+  //   res = await contract.checkUserExists(address1.address)
+  //   expect(res).to.equal(true)
+  // });
