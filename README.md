@@ -16,3 +16,11 @@ npx hardhat help
 
 
 https://app.circleci.com/settings/project/github/lukassaul/BSCVotedOracle?utm_campaign=locked_project&utm_content=project_dashboard_tooltip&utm_medium=copy_admin_project_set_up_link&utm_source=circleci_onboarding
+
+
+## how to get started
+
+```
+yarn 
+yarn test
+```
